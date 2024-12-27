@@ -1,4 +1,4 @@
-## Mandlebrot Project
+## Introduction
 
 The Mandelbrot set is a complex mathematical construct defined by the iterative equation:
 <div align="center">
@@ -8,7 +8,10 @@ where the initial z value is 0 and c is a complex constant. This set provides a 
 
 ![hls_py_imp](https://github.com/user-attachments/assets/20d663e7-8fb4-45b6-95c0-0eed03e70cab)
 
-This project exploits the task level parallelism of FPGA architectures to accelerate the computation of mandelbrot set values. This starts with a sequential implementation of code and compute spirals for the positive y-plane. Following this implementation, we aim to reduce design latency by exploring fixed point arithmetic computation and pipelining.
+This project exploits the task level parallelism of FPGA architectures to accelerate the computation of mandelbrot set values. This starts with a sequential implementation of code and compute spirals for the positive y-plane. By implementing intra-tile parallelism in our approach we are able to achieve a significant speedup of approximately 1590x as compared to our baseline architecture far exceeding the reported 170x expected speedup as produced by vivado_hls. 
+
+<img width="456" alt="image" src="https://github.com/user-attachments/assets/fca3da24-fe86-4171-baa7-2d99ec55b92d" />
+
 
 ### Automate Plotting and Saving Results
 #### Initial Setup (Only Do Once)
