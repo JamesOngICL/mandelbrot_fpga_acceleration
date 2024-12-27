@@ -1,0 +1,8 @@
+ecelinux/mandelbrot.prj
+*.log
+ecelinux/display/virtual_env
+ecelinux/display/result.csv
+ecelinux/display/mandelbrot_out.png
+ecelinux/mandelbrot
+ecelinux/mandelbrot_plot
+ecelinux/result

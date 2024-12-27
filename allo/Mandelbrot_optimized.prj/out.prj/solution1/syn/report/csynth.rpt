@@ -1,0 +1,458 @@
+
+
+================================================================
+== Synthesis Summary Report of 'mandelbrot_compute'
+================================================================
++ General Information: 
+    * Date:           Wed Dec 11 17:29:26 2024
+    * Version:        2022.1 (Build 3526262 on Mon Apr 18 15:47:01 MDT 2022)
+    * Project:        out.prj
+    * Solution:       solution1 (Vivado IP Flow Target)
+    * Product family: virtexuplus
+    * Target device:  xcu280-fsvh2892-2L-e
+    
+
++ Performance & Resource Estimates: 
+    
+    PS: '+' for module; 'o' for loop; '*' for dataflow
+    +-----------------------------------------------------+--------+-------+---------+-----------+----------+---------+-------+----------+------+----------+------------+-------------+-----+
+    |                       Modules                       |  Issue |       | Latency |  Latency  | Iteration|         |  Trip |          |      |          |            |             |     |
+    |                       & Loops                       |  Type  | Slack | (cycles)|    (ns)   |  Latency | Interval| Count | Pipelined| BRAM |    DSP   |     FF     |     LUT     | URAM|
+    +-----------------------------------------------------+--------+-------+---------+-----------+----------+---------+-------+----------+------+----------+------------+-------------+-----+
+    |+ mandelbrot_compute                                 |  Timing|  -3.96|   932409|  5.963e+06|         -|   932410|      -|        no|     -|  18 (~0%)|  3125 (~0%)|   44498 (3%)|    -|
+    | o l_S_r_0_r_l_S_c_0_c                               |       -|   2.43|   902400|  5.771e+06|      3008|        -|    300|        no|     -|         -|           -|            -|    -|
+    |  + mandelbrot_compute_Pipeline_l_S_count1_0_count1  |  Timing|  -3.96|     3003|  1.920e+04|         -|     3003|      -|        no|     -|  18 (~0%)|   878 (~0%)|  10417 (~0%)|    -|
+    |   o l_S_count1_0_count1                             |      II|   2.43|     3001|  1.919e+04|         5|        3|   1000|       yes|     -|         -|           -|            -|    -|
+    | o l_S_store_res0_store_res0_l_0_l_store_res0_l_1    |       -|   2.43|    30001|  1.919e+05|         3|        1|  30000|       yes|     -|         -|           -|            -|    -|
+    +-----------------------------------------------------+--------+-------+---------+-----------+----------+---------+-------+----------+------+----------+------------+-------------+-----+
+
+
+================================================================
+== HW Interfaces
+================================================================
+* M_AXI
++-------------+------------+---------------+---------+--------+----------+-----------+--------------+--------------+-------------+-------------+
+| Interface   | Data Width | Address Width | Latency | Offset | Register | Max Widen | Max Read     | Max Write    | Num Read    | Num Write   |
+|             | (SW->HW)   |               |         |        |          | Bitwidth  | Burst Length | Burst Length | Outstanding | Outstanding |
++-------------+------------+---------------+---------+--------+----------+-----------+--------------+--------------+-------------+-------------+
+| m_axi_gmem0 | 8 -> 8     | 64            | 0       | slave  | 0        | 0         | 16           | 16           | 16          | 16          |
++-------------+------------+---------------+---------+--------+----------+-----------+--------------+--------------+-------------+-------------+
+
+* S_AXILITE Interfaces
++---------------+------------+---------------+--------+----------+
+| Interface     | Data Width | Address Width | Offset | Register |
++---------------+------------+---------------+--------+----------+
+| s_axi_control | 32         | 5             | 16     | 0        |
++---------------+------------+---------------+--------+----------+
+
+* S_AXILITE Registers
++---------------+----------+--------+-------+--------+---------------------+
+| Interface     | Register | Offset | Width | Access | Description         |
++---------------+----------+--------+-------+--------+---------------------+
+| s_axi_control | v107_1   | 0x10   | 32    | W      | Data signal of v107 |
+| s_axi_control | v107_2   | 0x14   | 32    | W      | Data signal of v107 |
++---------------+----------+--------+-------+--------+---------------------+
+
+* TOP LEVEL CONTROL
++-----------+------------+-----------------------------------+
+| Interface | Type       | Ports                             |
++-----------+------------+-----------------------------------+
+| ap_clk    | clock      | ap_clk                            |
+| ap_rst_n  | reset      | ap_rst_n                          |
+| ap_ctrl   | ap_ctrl_hs | ap_done ap_idle ap_ready ap_start |
++-----------+------------+-----------------------------------+
+
+
+================================================================
+== SW I/O Information
+================================================================
+* Top Function Arguments
++----------+-----------+--------------+
+| Argument | Direction | Datatype     |
++----------+-----------+--------------+
+| v107     | out       | signed char* |
++----------+-----------+--------------+
+
+* SW-to-HW Mapping
++----------+---------------+-----------+----------+----------------------------------+
+| Argument | HW Interface  | HW Type   | HW Usage | HW Info                          |
++----------+---------------+-----------+----------+----------------------------------+
+| v107     | m_axi_gmem0   | interface |          |                                  |
+| v107     | s_axi_control | register  | offset   | name=v107_1 offset=0x10 range=32 |
+| v107     | s_axi_control | register  | offset   | name=v107_2 offset=0x14 range=32 |
++----------+---------------+-----------+----------+----------------------------------+
+
+
+================================================================
+== M_AXI Burst Information
+================================================================
+ Note: All burst requests might be further partitioned into multiple requests during RTL generation based on max_read_burst_length or max_write_burst_length settings.
+
+* Inferred Burst Summary
++--------------+-------------------------------+-----------+--------+-------+-------------------+
+| HW Interface | Loop                          | Direction | Length | Width | Location          |
++--------------+-------------------------------+-----------+--------+-------+-------------------+
+| m_axi_gmem0  | l_S_store_res0_store_res0_l_0 | write     | 30000  | 8     | kernel.cpp:182:33 |
++--------------+-------------------------------+-----------+--------+-------+-------------------+
+
+* Inferred Bursts and Widening Missed
++--------------+----------+------------------+------------------------------------------------------------------------------------------------------+------------+-------------------+
+| HW Interface | Variable | Loop             | Problem                                                                                              | Resolution | Location          |
++--------------+----------+------------------+------------------------------------------------------------------------------------------------------+------------+-------------------+
+| m_axi_gmem0  | v107     | l_store_res0_l_1 | Could not widen since type i8 size is greater than or equal to the max_widen_bitwidth threshold of 0 | 214-353    | kernel.cpp:183:23 |
++--------------+----------+------------------+------------------------------------------------------------------------------------------------------+------------+-------------------+
+
+    * Resolution URL: www.xilinx.com/cgi-bin/docs/rdoc?v=2022.1;t=hls+guidance;d=XXX-YYY.html (replace XXX-YYY with column value)
+
+================================================================
+== Bind Op Report
+================================================================
++----------------------------------------------------+-----+--------+----------------+-----+--------+---------+
+| Name                                               | DSP | Pragma | Variable       | Op  | Impl   | Latency |
++----------------------------------------------------+-----+--------+----------------+-----+--------+---------+
+| + mandelbrot_compute                               | 18  |        |                |     |        |         |
+|   add_ln214_fu_40858_p2                            | -   |        | add_ln214      | add | fabric | 0       |
+|   add_ln214_1_fu_41094_p2                          | -   |        | add_ln214_1    | add | fabric | 0       |
+|   add_ln217_fu_46222_p2                            | -   |        | add_ln217      | add | fabric | 0       |
+|   store_res0_l_1_fu_46560_p2                       | -   |        | store_res0_l_1 | add | fabric | 0       |
+|   add_ln182_1_fu_46566_p2                          | -   |        | add_ln182_1    | add | fabric | 0       |
+|   add_ln182_fu_46578_p2                            | -   |        | add_ln182      | add | fabric | 0       |
+|  + mandelbrot_compute_Pipeline_l_S_count1_0_count1 | 18  |        |                |     |        |         |
+|    count1_2_fu_125_p2                              | -   |        | count1_2       | add | fabric | 0       |
+|    v39_fu_318_p2                                   | -   |        | v39            | add | fabric | 0       |
+|    mul_55s_55s_104_1_1_U1                          | -   |        | r_V_2          | mul | fabric | 0       |
+|    v52_V_fu_185_p2                                 | -   |        | v52_V          | add | fabric | 0       |
+|    mul_55s_55s_105_1_1_U2                          | -   |        | r_V            | mul | fabric | 0       |
+|    mul_55s_55s_105_1_1_U3                          | -   |        | r_V_4          | mul | fabric | 0       |
+|    mul_55s_55s_105_5_1_U4                          | 9   |        | r_V_6          | mul | dsp    | 4       |
+|    mul_55s_55s_105_5_1_U5                          | 9   |        | r_V_8          | mul | auto   | 4       |
+|    v84_V_fu_379_p2                                 | -   |        | v84_V          | add | fabric | 0       |
++----------------------------------------------------+-----+--------+----------------+-----+--------+---------+
+
+
+================================================================
+== Bind Storage Report
+================================================================
++----------------------+------+------+--------+----------+---------+------+---------+
+| Name                 | BRAM | URAM | Pragma | Variable | Storage | Impl | Latency |
++----------------------+------+------+--------+----------+---------+------+---------+
+| + mandelbrot_compute | 0    | 0    |        |          |         |      |         |
+|   buf0_U             | -    | -    |        | buf0     | ram_1p  | auto | 1       |
+|   buf0_1_U           | -    | -    |        | buf0_1   | ram_1p  | auto | 1       |
+|   buf0_2_U           | -    | -    |        | buf0_2   | ram_1p  | auto | 1       |
+|   buf0_3_U           | -    | -    |        | buf0_3   | ram_1p  | auto | 1       |
+|   buf0_4_U           | -    | -    |        | buf0_4   | ram_1p  | auto | 1       |
+|   buf0_5_U           | -    | -    |        | buf0_5   | ram_1p  | auto | 1       |
+|   buf0_6_U           | -    | -    |        | buf0_6   | ram_1p  | auto | 1       |
+|   buf0_7_U           | -    | -    |        | buf0_7   | ram_1p  | auto | 1       |
+|   buf0_8_U           | -    | -    |        | buf0_8   | ram_1p  | auto | 1       |
+|   buf0_9_U           | -    | -    |        | buf0_9   | ram_1p  | auto | 1       |
+|   buf0_10_U          | -    | -    |        | buf0_10  | ram_1p  | auto | 1       |
+|   buf0_11_U          | -    | -    |        | buf0_11  | ram_1p  | auto | 1       |
+|   buf0_12_U          | -    | -    |        | buf0_12  | ram_1p  | auto | 1       |
+|   buf0_13_U          | -    | -    |        | buf0_13  | ram_1p  | auto | 1       |
+|   buf0_14_U          | -    | -    |        | buf0_14  | ram_1p  | auto | 1       |
+|   buf0_15_U          | -    | -    |        | buf0_15  | ram_1p  | auto | 1       |
+|   buf0_16_U          | -    | -    |        | buf0_16  | ram_1p  | auto | 1       |
+|   buf0_17_U          | -    | -    |        | buf0_17  | ram_1p  | auto | 1       |
+|   buf0_18_U          | -    | -    |        | buf0_18  | ram_1p  | auto | 1       |
+|   buf0_19_U          | -    | -    |        | buf0_19  | ram_1p  | auto | 1       |
+|   buf0_20_U          | -    | -    |        | buf0_20  | ram_1p  | auto | 1       |
+|   buf0_21_U          | -    | -    |        | buf0_21  | ram_1p  | auto | 1       |
+|   buf0_22_U          | -    | -    |        | buf0_22  | ram_1p  | auto | 1       |
+|   buf0_23_U          | -    | -    |        | buf0_23  | ram_1p  | auto | 1       |
+|   buf0_24_U          | -    | -    |        | buf0_24  | ram_1p  | auto | 1       |
+|   buf0_25_U          | -    | -    |        | buf0_25  | ram_1p  | auto | 1       |
+|   buf0_26_U          | -    | -    |        | buf0_26  | ram_1p  | auto | 1       |
+|   buf0_27_U          | -    | -    |        | buf0_27  | ram_1p  | auto | 1       |
+|   buf0_28_U          | -    | -    |        | buf0_28  | ram_1p  | auto | 1       |
+|   buf0_29_U          | -    | -    |        | buf0_29  | ram_1p  | auto | 1       |
+|   buf0_30_U          | -    | -    |        | buf0_30  | ram_1p  | auto | 1       |
+|   buf0_31_U          | -    | -    |        | buf0_31  | ram_1p  | auto | 1       |
+|   buf0_32_U          | -    | -    |        | buf0_32  | ram_1p  | auto | 1       |
+|   buf0_33_U          | -    | -    |        | buf0_33  | ram_1p  | auto | 1       |
+|   buf0_34_U          | -    | -    |        | buf0_34  | ram_1p  | auto | 1       |
+|   buf0_35_U          | -    | -    |        | buf0_35  | ram_1p  | auto | 1       |
+|   buf0_36_U          | -    | -    |        | buf0_36  | ram_1p  | auto | 1       |
+|   buf0_37_U          | -    | -    |        | buf0_37  | ram_1p  | auto | 1       |
+|   buf0_38_U          | -    | -    |        | buf0_38  | ram_1p  | auto | 1       |
+|   buf0_39_U          | -    | -    |        | buf0_39  | ram_1p  | auto | 1       |
+|   buf0_40_U          | -    | -    |        | buf0_40  | ram_1p  | auto | 1       |
+|   buf0_41_U          | -    | -    |        | buf0_41  | ram_1p  | auto | 1       |
+|   buf0_42_U          | -    | -    |        | buf0_42  | ram_1p  | auto | 1       |
+|   buf0_43_U          | -    | -    |        | buf0_43  | ram_1p  | auto | 1       |
+|   buf0_44_U          | -    | -    |        | buf0_44  | ram_1p  | auto | 1       |
+|   buf0_45_U          | -    | -    |        | buf0_45  | ram_1p  | auto | 1       |
+|   buf0_46_U          | -    | -    |        | buf0_46  | ram_1p  | auto | 1       |
+|   buf0_47_U          | -    | -    |        | buf0_47  | ram_1p  | auto | 1       |
+|   buf0_48_U          | -    | -    |        | buf0_48  | ram_1p  | auto | 1       |
+|   buf0_49_U          | -    | -    |        | buf0_49  | ram_1p  | auto | 1       |
+|   buf0_50_U          | -    | -    |        | buf0_50  | ram_1p  | auto | 1       |
+|   buf0_51_U          | -    | -    |        | buf0_51  | ram_1p  | auto | 1       |
+|   buf0_52_U          | -    | -    |        | buf0_52  | ram_1p  | auto | 1       |
+|   buf0_53_U          | -    | -    |        | buf0_53  | ram_1p  | auto | 1       |
+|   buf0_54_U          | -    | -    |        | buf0_54  | ram_1p  | auto | 1       |
+|   buf0_55_U          | -    | -    |        | buf0_55  | ram_1p  | auto | 1       |
+|   buf0_56_U          | -    | -    |        | buf0_56  | ram_1p  | auto | 1       |
+|   buf0_57_U          | -    | -    |        | buf0_57  | ram_1p  | auto | 1       |
+|   buf0_58_U          | -    | -    |        | buf0_58  | ram_1p  | auto | 1       |
+|   buf0_59_U          | -    | -    |        | buf0_59  | ram_1p  | auto | 1       |
+|   buf0_60_U          | -    | -    |        | buf0_60  | ram_1p  | auto | 1       |
+|   buf0_61_U          | -    | -    |        | buf0_61  | ram_1p  | auto | 1       |
+|   buf0_62_U          | -    | -    |        | buf0_62  | ram_1p  | auto | 1       |
+|   buf0_63_U          | -    | -    |        | buf0_63  | ram_1p  | auto | 1       |
+|   buf0_64_U          | -    | -    |        | buf0_64  | ram_1p  | auto | 1       |
+|   buf0_65_U          | -    | -    |        | buf0_65  | ram_1p  | auto | 1       |
+|   buf0_66_U          | -    | -    |        | buf0_66  | ram_1p  | auto | 1       |
+|   buf0_67_U          | -    | -    |        | buf0_67  | ram_1p  | auto | 1       |
+|   buf0_68_U          | -    | -    |        | buf0_68  | ram_1p  | auto | 1       |
+|   buf0_69_U          | -    | -    |        | buf0_69  | ram_1p  | auto | 1       |
+|   buf0_70_U          | -    | -    |        | buf0_70  | ram_1p  | auto | 1       |
+|   buf0_71_U          | -    | -    |        | buf0_71  | ram_1p  | auto | 1       |
+|   buf0_72_U          | -    | -    |        | buf0_72  | ram_1p  | auto | 1       |
+|   buf0_73_U          | -    | -    |        | buf0_73  | ram_1p  | auto | 1       |
+|   buf0_74_U          | -    | -    |        | buf0_74  | ram_1p  | auto | 1       |
+|   buf0_75_U          | -    | -    |        | buf0_75  | ram_1p  | auto | 1       |
+|   buf0_76_U          | -    | -    |        | buf0_76  | ram_1p  | auto | 1       |
+|   buf0_77_U          | -    | -    |        | buf0_77  | ram_1p  | auto | 1       |
+|   buf0_78_U          | -    | -    |        | buf0_78  | ram_1p  | auto | 1       |
+|   buf0_79_U          | -    | -    |        | buf0_79  | ram_1p  | auto | 1       |
+|   buf0_80_U          | -    | -    |        | buf0_80  | ram_1p  | auto | 1       |
+|   buf0_81_U          | -    | -    |        | buf0_81  | ram_1p  | auto | 1       |
+|   buf0_82_U          | -    | -    |        | buf0_82  | ram_1p  | auto | 1       |
+|   buf0_83_U          | -    | -    |        | buf0_83  | ram_1p  | auto | 1       |
+|   buf0_84_U          | -    | -    |        | buf0_84  | ram_1p  | auto | 1       |
+|   buf0_85_U          | -    | -    |        | buf0_85  | ram_1p  | auto | 1       |
+|   buf0_86_U          | -    | -    |        | buf0_86  | ram_1p  | auto | 1       |
+|   buf0_87_U          | -    | -    |        | buf0_87  | ram_1p  | auto | 1       |
+|   buf0_88_U          | -    | -    |        | buf0_88  | ram_1p  | auto | 1       |
+|   buf0_89_U          | -    | -    |        | buf0_89  | ram_1p  | auto | 1       |
+|   buf0_90_U          | -    | -    |        | buf0_90  | ram_1p  | auto | 1       |
+|   buf0_91_U          | -    | -    |        | buf0_91  | ram_1p  | auto | 1       |
+|   buf0_92_U          | -    | -    |        | buf0_92  | ram_1p  | auto | 1       |
+|   buf0_93_U          | -    | -    |        | buf0_93  | ram_1p  | auto | 1       |
+|   buf0_94_U          | -    | -    |        | buf0_94  | ram_1p  | auto | 1       |
+|   buf0_95_U          | -    | -    |        | buf0_95  | ram_1p  | auto | 1       |
+|   buf0_96_U          | -    | -    |        | buf0_96  | ram_1p  | auto | 1       |
+|   buf0_97_U          | -    | -    |        | buf0_97  | ram_1p  | auto | 1       |
+|   buf0_98_U          | -    | -    |        | buf0_98  | ram_1p  | auto | 1       |
+|   buf0_99_U          | -    | -    |        | buf0_99  | ram_1p  | auto | 1       |
+|   buf0_100_U         | -    | -    |        | buf0_100 | ram_1p  | auto | 1       |
+|   buf0_101_U         | -    | -    |        | buf0_101 | ram_1p  | auto | 1       |
+|   buf0_102_U         | -    | -    |        | buf0_102 | ram_1p  | auto | 1       |
+|   buf0_103_U         | -    | -    |        | buf0_103 | ram_1p  | auto | 1       |
+|   buf0_104_U         | -    | -    |        | buf0_104 | ram_1p  | auto | 1       |
+|   buf0_105_U         | -    | -    |        | buf0_105 | ram_1p  | auto | 1       |
+|   buf0_106_U         | -    | -    |        | buf0_106 | ram_1p  | auto | 1       |
+|   buf0_107_U         | -    | -    |        | buf0_107 | ram_1p  | auto | 1       |
+|   buf0_108_U         | -    | -    |        | buf0_108 | ram_1p  | auto | 1       |
+|   buf0_109_U         | -    | -    |        | buf0_109 | ram_1p  | auto | 1       |
+|   buf0_110_U         | -    | -    |        | buf0_110 | ram_1p  | auto | 1       |
+|   buf0_111_U         | -    | -    |        | buf0_111 | ram_1p  | auto | 1       |
+|   buf0_112_U         | -    | -    |        | buf0_112 | ram_1p  | auto | 1       |
+|   buf0_113_U         | -    | -    |        | buf0_113 | ram_1p  | auto | 1       |
+|   buf0_114_U         | -    | -    |        | buf0_114 | ram_1p  | auto | 1       |
+|   buf0_115_U         | -    | -    |        | buf0_115 | ram_1p  | auto | 1       |
+|   buf0_116_U         | -    | -    |        | buf0_116 | ram_1p  | auto | 1       |
+|   buf0_117_U         | -    | -    |        | buf0_117 | ram_1p  | auto | 1       |
+|   buf0_118_U         | -    | -    |        | buf0_118 | ram_1p  | auto | 1       |
+|   buf0_119_U         | -    | -    |        | buf0_119 | ram_1p  | auto | 1       |
+|   buf0_120_U         | -    | -    |        | buf0_120 | ram_1p  | auto | 1       |
+|   buf0_121_U         | -    | -    |        | buf0_121 | ram_1p  | auto | 1       |
+|   buf0_122_U         | -    | -    |        | buf0_122 | ram_1p  | auto | 1       |
+|   buf0_123_U         | -    | -    |        | buf0_123 | ram_1p  | auto | 1       |
+|   buf0_124_U         | -    | -    |        | buf0_124 | ram_1p  | auto | 1       |
+|   buf0_125_U         | -    | -    |        | buf0_125 | ram_1p  | auto | 1       |
+|   buf0_126_U         | -    | -    |        | buf0_126 | ram_1p  | auto | 1       |
+|   buf0_127_U         | -    | -    |        | buf0_127 | ram_1p  | auto | 1       |
+|   buf0_128_U         | -    | -    |        | buf0_128 | ram_1p  | auto | 1       |
+|   buf0_129_U         | -    | -    |        | buf0_129 | ram_1p  | auto | 1       |
+|   buf0_130_U         | -    | -    |        | buf0_130 | ram_1p  | auto | 1       |
+|   buf0_131_U         | -    | -    |        | buf0_131 | ram_1p  | auto | 1       |
+|   buf0_132_U         | -    | -    |        | buf0_132 | ram_1p  | auto | 1       |
+|   buf0_133_U         | -    | -    |        | buf0_133 | ram_1p  | auto | 1       |
+|   buf0_134_U         | -    | -    |        | buf0_134 | ram_1p  | auto | 1       |
+|   buf0_135_U         | -    | -    |        | buf0_135 | ram_1p  | auto | 1       |
+|   buf0_136_U         | -    | -    |        | buf0_136 | ram_1p  | auto | 1       |
+|   buf0_137_U         | -    | -    |        | buf0_137 | ram_1p  | auto | 1       |
+|   buf0_138_U         | -    | -    |        | buf0_138 | ram_1p  | auto | 1       |
+|   buf0_139_U         | -    | -    |        | buf0_139 | ram_1p  | auto | 1       |
+|   buf0_140_U         | -    | -    |        | buf0_140 | ram_1p  | auto | 1       |
+|   buf0_141_U         | -    | -    |        | buf0_141 | ram_1p  | auto | 1       |
+|   buf0_142_U         | -    | -    |        | buf0_142 | ram_1p  | auto | 1       |
+|   buf0_143_U         | -    | -    |        | buf0_143 | ram_1p  | auto | 1       |
+|   buf0_144_U         | -    | -    |        | buf0_144 | ram_1p  | auto | 1       |
+|   buf0_145_U         | -    | -    |        | buf0_145 | ram_1p  | auto | 1       |
+|   buf0_146_U         | -    | -    |        | buf0_146 | ram_1p  | auto | 1       |
+|   buf0_147_U         | -    | -    |        | buf0_147 | ram_1p  | auto | 1       |
+|   buf0_148_U         | -    | -    |        | buf0_148 | ram_1p  | auto | 1       |
+|   buf0_149_U         | -    | -    |        | buf0_149 | ram_1p  | auto | 1       |
+|   buf0_150_U         | -    | -    |        | buf0_150 | ram_1p  | auto | 1       |
+|   buf0_151_U         | -    | -    |        | buf0_151 | ram_1p  | auto | 1       |
+|   buf0_152_U         | -    | -    |        | buf0_152 | ram_1p  | auto | 1       |
+|   buf0_153_U         | -    | -    |        | buf0_153 | ram_1p  | auto | 1       |
+|   buf0_154_U         | -    | -    |        | buf0_154 | ram_1p  | auto | 1       |
+|   buf0_155_U         | -    | -    |        | buf0_155 | ram_1p  | auto | 1       |
+|   buf0_156_U         | -    | -    |        | buf0_156 | ram_1p  | auto | 1       |
+|   buf0_157_U         | -    | -    |        | buf0_157 | ram_1p  | auto | 1       |
+|   buf0_158_U         | -    | -    |        | buf0_158 | ram_1p  | auto | 1       |
+|   buf0_159_U         | -    | -    |        | buf0_159 | ram_1p  | auto | 1       |
+|   buf0_160_U         | -    | -    |        | buf0_160 | ram_1p  | auto | 1       |
+|   buf0_161_U         | -    | -    |        | buf0_161 | ram_1p  | auto | 1       |
+|   buf0_162_U         | -    | -    |        | buf0_162 | ram_1p  | auto | 1       |
+|   buf0_163_U         | -    | -    |        | buf0_163 | ram_1p  | auto | 1       |
+|   buf0_164_U         | -    | -    |        | buf0_164 | ram_1p  | auto | 1       |
+|   buf0_165_U         | -    | -    |        | buf0_165 | ram_1p  | auto | 1       |
+|   buf0_166_U         | -    | -    |        | buf0_166 | ram_1p  | auto | 1       |
+|   buf0_167_U         | -    | -    |        | buf0_167 | ram_1p  | auto | 1       |
+|   buf0_168_U         | -    | -    |        | buf0_168 | ram_1p  | auto | 1       |
+|   buf0_169_U         | -    | -    |        | buf0_169 | ram_1p  | auto | 1       |
+|   buf0_170_U         | -    | -    |        | buf0_170 | ram_1p  | auto | 1       |
+|   buf0_171_U         | -    | -    |        | buf0_171 | ram_1p  | auto | 1       |
+|   buf0_172_U         | -    | -    |        | buf0_172 | ram_1p  | auto | 1       |
+|   buf0_173_U         | -    | -    |        | buf0_173 | ram_1p  | auto | 1       |
+|   buf0_174_U         | -    | -    |        | buf0_174 | ram_1p  | auto | 1       |
+|   buf0_175_U         | -    | -    |        | buf0_175 | ram_1p  | auto | 1       |
+|   buf0_176_U         | -    | -    |        | buf0_176 | ram_1p  | auto | 1       |
+|   buf0_177_U         | -    | -    |        | buf0_177 | ram_1p  | auto | 1       |
+|   buf0_178_U         | -    | -    |        | buf0_178 | ram_1p  | auto | 1       |
+|   buf0_179_U         | -    | -    |        | buf0_179 | ram_1p  | auto | 1       |
+|   buf0_180_U         | -    | -    |        | buf0_180 | ram_1p  | auto | 1       |
+|   buf0_181_U         | -    | -    |        | buf0_181 | ram_1p  | auto | 1       |
+|   buf0_182_U         | -    | -    |        | buf0_182 | ram_1p  | auto | 1       |
+|   buf0_183_U         | -    | -    |        | buf0_183 | ram_1p  | auto | 1       |
+|   buf0_184_U         | -    | -    |        | buf0_184 | ram_1p  | auto | 1       |
+|   buf0_185_U         | -    | -    |        | buf0_185 | ram_1p  | auto | 1       |
+|   buf0_186_U         | -    | -    |        | buf0_186 | ram_1p  | auto | 1       |
+|   buf0_187_U         | -    | -    |        | buf0_187 | ram_1p  | auto | 1       |
+|   buf0_188_U         | -    | -    |        | buf0_188 | ram_1p  | auto | 1       |
+|   buf0_189_U         | -    | -    |        | buf0_189 | ram_1p  | auto | 1       |
+|   buf0_190_U         | -    | -    |        | buf0_190 | ram_1p  | auto | 1       |
+|   buf0_191_U         | -    | -    |        | buf0_191 | ram_1p  | auto | 1       |
+|   buf0_192_U         | -    | -    |        | buf0_192 | ram_1p  | auto | 1       |
+|   buf0_193_U         | -    | -    |        | buf0_193 | ram_1p  | auto | 1       |
+|   buf0_194_U         | -    | -    |        | buf0_194 | ram_1p  | auto | 1       |
+|   buf0_195_U         | -    | -    |        | buf0_195 | ram_1p  | auto | 1       |
+|   buf0_196_U         | -    | -    |        | buf0_196 | ram_1p  | auto | 1       |
+|   buf0_197_U         | -    | -    |        | buf0_197 | ram_1p  | auto | 1       |
+|   buf0_198_U         | -    | -    |        | buf0_198 | ram_1p  | auto | 1       |
+|   buf0_199_U         | -    | -    |        | buf0_199 | ram_1p  | auto | 1       |
+|   buf0_200_U         | -    | -    |        | buf0_200 | ram_1p  | auto | 1       |
+|   buf0_201_U         | -    | -    |        | buf0_201 | ram_1p  | auto | 1       |
+|   buf0_202_U         | -    | -    |        | buf0_202 | ram_1p  | auto | 1       |
+|   buf0_203_U         | -    | -    |        | buf0_203 | ram_1p  | auto | 1       |
+|   buf0_204_U         | -    | -    |        | buf0_204 | ram_1p  | auto | 1       |
+|   buf0_205_U         | -    | -    |        | buf0_205 | ram_1p  | auto | 1       |
+|   buf0_206_U         | -    | -    |        | buf0_206 | ram_1p  | auto | 1       |
+|   buf0_207_U         | -    | -    |        | buf0_207 | ram_1p  | auto | 1       |
+|   buf0_208_U         | -    | -    |        | buf0_208 | ram_1p  | auto | 1       |
+|   buf0_209_U         | -    | -    |        | buf0_209 | ram_1p  | auto | 1       |
+|   buf0_210_U         | -    | -    |        | buf0_210 | ram_1p  | auto | 1       |
+|   buf0_211_U         | -    | -    |        | buf0_211 | ram_1p  | auto | 1       |
+|   buf0_212_U         | -    | -    |        | buf0_212 | ram_1p  | auto | 1       |
+|   buf0_213_U         | -    | -    |        | buf0_213 | ram_1p  | auto | 1       |
+|   buf0_214_U         | -    | -    |        | buf0_214 | ram_1p  | auto | 1       |
+|   buf0_215_U         | -    | -    |        | buf0_215 | ram_1p  | auto | 1       |
+|   buf0_216_U         | -    | -    |        | buf0_216 | ram_1p  | auto | 1       |
+|   buf0_217_U         | -    | -    |        | buf0_217 | ram_1p  | auto | 1       |
+|   buf0_218_U         | -    | -    |        | buf0_218 | ram_1p  | auto | 1       |
+|   buf0_219_U         | -    | -    |        | buf0_219 | ram_1p  | auto | 1       |
+|   buf0_220_U         | -    | -    |        | buf0_220 | ram_1p  | auto | 1       |
+|   buf0_221_U         | -    | -    |        | buf0_221 | ram_1p  | auto | 1       |
+|   buf0_222_U         | -    | -    |        | buf0_222 | ram_1p  | auto | 1       |
+|   buf0_223_U         | -    | -    |        | buf0_223 | ram_1p  | auto | 1       |
+|   buf0_224_U         | -    | -    |        | buf0_224 | ram_1p  | auto | 1       |
+|   buf0_225_U         | -    | -    |        | buf0_225 | ram_1p  | auto | 1       |
+|   buf0_226_U         | -    | -    |        | buf0_226 | ram_1p  | auto | 1       |
+|   buf0_227_U         | -    | -    |        | buf0_227 | ram_1p  | auto | 1       |
+|   buf0_228_U         | -    | -    |        | buf0_228 | ram_1p  | auto | 1       |
+|   buf0_229_U         | -    | -    |        | buf0_229 | ram_1p  | auto | 1       |
+|   buf0_230_U         | -    | -    |        | buf0_230 | ram_1p  | auto | 1       |
+|   buf0_231_U         | -    | -    |        | buf0_231 | ram_1p  | auto | 1       |
+|   buf0_232_U         | -    | -    |        | buf0_232 | ram_1p  | auto | 1       |
+|   buf0_233_U         | -    | -    |        | buf0_233 | ram_1p  | auto | 1       |
+|   buf0_234_U         | -    | -    |        | buf0_234 | ram_1p  | auto | 1       |
+|   buf0_235_U         | -    | -    |        | buf0_235 | ram_1p  | auto | 1       |
+|   buf0_236_U         | -    | -    |        | buf0_236 | ram_1p  | auto | 1       |
+|   buf0_237_U         | -    | -    |        | buf0_237 | ram_1p  | auto | 1       |
+|   buf0_238_U         | -    | -    |        | buf0_238 | ram_1p  | auto | 1       |
+|   buf0_239_U         | -    | -    |        | buf0_239 | ram_1p  | auto | 1       |
+|   buf0_240_U         | -    | -    |        | buf0_240 | ram_1p  | auto | 1       |
+|   buf0_241_U         | -    | -    |        | buf0_241 | ram_1p  | auto | 1       |
+|   buf0_242_U         | -    | -    |        | buf0_242 | ram_1p  | auto | 1       |
+|   buf0_243_U         | -    | -    |        | buf0_243 | ram_1p  | auto | 1       |
+|   buf0_244_U         | -    | -    |        | buf0_244 | ram_1p  | auto | 1       |
+|   buf0_245_U         | -    | -    |        | buf0_245 | ram_1p  | auto | 1       |
+|   buf0_246_U         | -    | -    |        | buf0_246 | ram_1p  | auto | 1       |
+|   buf0_247_U         | -    | -    |        | buf0_247 | ram_1p  | auto | 1       |
+|   buf0_248_U         | -    | -    |        | buf0_248 | ram_1p  | auto | 1       |
+|   buf0_249_U         | -    | -    |        | buf0_249 | ram_1p  | auto | 1       |
+|   buf0_250_U         | -    | -    |        | buf0_250 | ram_1p  | auto | 1       |
+|   buf0_251_U         | -    | -    |        | buf0_251 | ram_1p  | auto | 1       |
+|   buf0_252_U         | -    | -    |        | buf0_252 | ram_1p  | auto | 1       |
+|   buf0_253_U         | -    | -    |        | buf0_253 | ram_1p  | auto | 1       |
+|   buf0_254_U         | -    | -    |        | buf0_254 | ram_1p  | auto | 1       |
+|   buf0_255_U         | -    | -    |        | buf0_255 | ram_1p  | auto | 1       |
+|   buf0_256_U         | -    | -    |        | buf0_256 | ram_1p  | auto | 1       |
+|   buf0_257_U         | -    | -    |        | buf0_257 | ram_1p  | auto | 1       |
+|   buf0_258_U         | -    | -    |        | buf0_258 | ram_1p  | auto | 1       |
+|   buf0_259_U         | -    | -    |        | buf0_259 | ram_1p  | auto | 1       |
+|   buf0_260_U         | -    | -    |        | buf0_260 | ram_1p  | auto | 1       |
+|   buf0_261_U         | -    | -    |        | buf0_261 | ram_1p  | auto | 1       |
+|   buf0_262_U         | -    | -    |        | buf0_262 | ram_1p  | auto | 1       |
+|   buf0_263_U         | -    | -    |        | buf0_263 | ram_1p  | auto | 1       |
+|   buf0_264_U         | -    | -    |        | buf0_264 | ram_1p  | auto | 1       |
+|   buf0_265_U         | -    | -    |        | buf0_265 | ram_1p  | auto | 1       |
+|   buf0_266_U         | -    | -    |        | buf0_266 | ram_1p  | auto | 1       |
+|   buf0_267_U         | -    | -    |        | buf0_267 | ram_1p  | auto | 1       |
+|   buf0_268_U         | -    | -    |        | buf0_268 | ram_1p  | auto | 1       |
+|   buf0_269_U         | -    | -    |        | buf0_269 | ram_1p  | auto | 1       |
+|   buf0_270_U         | -    | -    |        | buf0_270 | ram_1p  | auto | 1       |
+|   buf0_271_U         | -    | -    |        | buf0_271 | ram_1p  | auto | 1       |
+|   buf0_272_U         | -    | -    |        | buf0_272 | ram_1p  | auto | 1       |
+|   buf0_273_U         | -    | -    |        | buf0_273 | ram_1p  | auto | 1       |
+|   buf0_274_U         | -    | -    |        | buf0_274 | ram_1p  | auto | 1       |
+|   buf0_275_U         | -    | -    |        | buf0_275 | ram_1p  | auto | 1       |
+|   buf0_276_U         | -    | -    |        | buf0_276 | ram_1p  | auto | 1       |
+|   buf0_277_U         | -    | -    |        | buf0_277 | ram_1p  | auto | 1       |
+|   buf0_278_U         | -    | -    |        | buf0_278 | ram_1p  | auto | 1       |
+|   buf0_279_U         | -    | -    |        | buf0_279 | ram_1p  | auto | 1       |
+|   buf0_280_U         | -    | -    |        | buf0_280 | ram_1p  | auto | 1       |
+|   buf0_281_U         | -    | -    |        | buf0_281 | ram_1p  | auto | 1       |
+|   buf0_282_U         | -    | -    |        | buf0_282 | ram_1p  | auto | 1       |
+|   buf0_283_U         | -    | -    |        | buf0_283 | ram_1p  | auto | 1       |
+|   buf0_284_U         | -    | -    |        | buf0_284 | ram_1p  | auto | 1       |
+|   buf0_285_U         | -    | -    |        | buf0_285 | ram_1p  | auto | 1       |
+|   buf0_286_U         | -    | -    |        | buf0_286 | ram_1p  | auto | 1       |
+|   buf0_287_U         | -    | -    |        | buf0_287 | ram_1p  | auto | 1       |
+|   buf0_288_U         | -    | -    |        | buf0_288 | ram_1p  | auto | 1       |
+|   buf0_289_U         | -    | -    |        | buf0_289 | ram_1p  | auto | 1       |
+|   buf0_290_U         | -    | -    |        | buf0_290 | ram_1p  | auto | 1       |
+|   buf0_291_U         | -    | -    |        | buf0_291 | ram_1p  | auto | 1       |
+|   buf0_292_U         | -    | -    |        | buf0_292 | ram_1p  | auto | 1       |
+|   buf0_293_U         | -    | -    |        | buf0_293 | ram_1p  | auto | 1       |
+|   buf0_294_U         | -    | -    |        | buf0_294 | ram_1p  | auto | 1       |
+|   buf0_295_U         | -    | -    |        | buf0_295 | ram_1p  | auto | 1       |
+|   buf0_296_U         | -    | -    |        | buf0_296 | ram_1p  | auto | 1       |
+|   buf0_297_U         | -    | -    |        | buf0_297 | ram_1p  | auto | 1       |
+|   buf0_298_U         | -    | -    |        | buf0_298 | ram_1p  | auto | 1       |
+|   buf0_299_U         | -    | -    |        | buf0_299 | ram_1p  | auto | 1       |
++----------------------+------+------+--------+----------+---------+------+---------+
+
+
+================================================================
+== Pragma Report
+================================================================
+* Valid Pragma Syntax
++-----------------+-------------------------------------------+--------------------------------------------+
+| Type            | Options                                   | Location                                   |
++-----------------+-------------------------------------------+--------------------------------------------+
+| pipeline        | II=2                                      | kernel.cpp:63 in pe                        |
+| array_partition | variable=v102 complete dim=2              | kernel.cpp:180 in store_res0, v102         |
+| pipeline        | II=1 rewind                               | kernel.cpp:184 in store_res0               |
+| interface       | m_axi port=v107 offset=slave bundle=gmem0 | kernel.cpp:194 in mandelbrot_compute, v107 |
+| array_partition | variable=buf0 complete dim=2              | kernel.cpp:196 in mandelbrot_compute, buf0 |
+| unroll          | factor=100                                | kernel.cpp:218 in mandelbrot_compute       |
++-----------------+-------------------------------------------+--------------------------------------------+
+
+
